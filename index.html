@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Paws & Whiskers Treats</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Ласощі та Смаколики</div>
+      <ul>
+        <li><a href="#about">Про нас</a></li>
+        <li><a href="#treats">Ласощі</a></li>
+        <li><a href="#contact">Контакти</a></li>
+        <li><button class="btn">Увійти</button></li>
+      </ul>
+    </nav>
+    <div class="hero">
+      <img src="images/hero-pets.png" alt="Собака і кіт" class="hero-image">
+      <h1>Смачні ласощі для ваших улюбленців</h1>
+      <p>Натуральні, здорові та смачні снеки для собак, котів та дрібних тварин.</p>
+      <a href="#treats" class="btn">До магазину</a>
+    </div>
+  </header>
+
+  <button id="cart-toggle" class="cart-fab" title="Відкрити кошик">
+    🛒 <span id="cart-count">0</span>
+  </button>
+  <div id="cart" class="cart">
+    <div class="cart-header">
+      <span><b>Кошик</b></span>
+      <button id="close-cart" title="Закрити">&times;</button>
+    </div>
+    <ul id="cart-items"></ul>
+    <p id="cart-total">Сума: 0 грн</p>
+    <button id="clear-cart" class="btn small">Очистити</button>
+    <button id="order-cart" class="btn order-btn">Замовити</button>
+  </div>
+  <div id="cart-notify" class="cart-notify">Додано у кошик!</div>
+
+  <main>
+    <section id="about">
+      <h2>Чому наші ласощі?</h2>
+      <div class="features-list">
+        <div class="feature">
+          <img src="https://img.icons8.com/color/128/dog-bone.png" alt="Natural Ingredients">
+          <h3>Натуральний склад</h3>
+          <p>Без штучних добавок і консервантів — тільки найкраще для улюбленців.</p>
+        </div>
+        <div class="feature">
+          <img src="https://img.icons8.com/color/128/cat-footprint.png" alt="For All Pets">
+          <h3>Для всіх тварин</h3>
+          <p>Смачні варіанти для собак, котів, кроликів, гризунів та інших.</p>
+        </div>
+        <div class="feature">
+          <img src="https://img.icons8.com/color/128/prize-ribbon.png" alt="Vet Approved">
+          <h3>Схвалено ветеринарами</h3>
+          <p>Рекомендації від фахівців для здорового способу життя тварин.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="treats">
+      <h2>Популярні ласощі</h2>
+      <div class="products-list">
+        <div class="product-card" data-id="1" data-name="Crunchy Dog Biscuits" data-price="119">
+          <img src="https://img.icons8.com/color/128/dog-bone.png" alt="Dog Biscuits">
+          <h4>Crunchy Dog Biscuits</h4>
+          <p>119 грн</p>
+          <button class="btn add-to-cart-btn">До кошика</button>
+        </div>
+        <div class="product-card" data-id="2" data-name="Salmon Cat Nibbles" data-price="99">
+          <img src="https://img.icons8.com/color/128/fish-food.png" alt="Cat Treats">
+          <h4>Salmon Cat Nibbles</h4>
+          <p>99 грн</p>
+          <button class="btn add-to-cart-btn">До кошика</button>
+        </div>
+        <div class="product-card" data-id="3" data-name="Veggie Bites for Small Pets" data-price="89">
+          <img src="https://img.icons8.com/color/128/carrot.png" alt="Small Pet Treats">
+          <h4>Veggie Bites for Small Pets</h4>
+          <p>89 грн</p>
+          <button class="btn add-to-cart-btn">До кошика</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Зворотній зв'язок</h2>
+      <form>
+        <input type="text" placeholder="Ваше ім’я" required>
+        <input type="email" placeholder="Ваш email" required>
+        <textarea placeholder="Ваше питання"></textarea>
+        <button class="btn" type="submit">Надіслати</button>
+      </form>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Paws & Whiskers. Всі права захищені.</p>
+  </footer>
+  <ul id="cart-items"></ul>
+  <script src="cart.js"></script>
+</body>
+</html>
