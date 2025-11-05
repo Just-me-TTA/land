@@ -14,29 +14,58 @@
         <li><a href="#about">Про нас</a></li>
         <li><a href="#treats">Ласощі</a></li>
         <li><a href="#contact">Контакти</a></li>
-        <li><button class="btn">Увійти</button></li>
       </ul>
     </nav>
     <div class="hero">
-      <img src="images/hero-pets.png" alt="Собака і кіт" class="hero-image">
+      <img src="images/hero-pets.png" alt="Собака та кіт" class="hero-image">
       <h1>Смачні ласощі для ваших улюбленців</h1>
       <p>Натуральні, здорові та смачні снеки для собак, котів та дрібних тварин.</p>
       <a href="#treats" class="btn">До магазину</a>
     </div>
   </header>
 
-  <button id="cart-toggle" class="cart-fab" title="Відкрити кошик">
-    🛒 <span id="cart-count">0</span>
+  <button id="cart-toggle" class="cart-fab" title="Відкрити кошик"
+          aria-label="Відкрити кошик" aria-haspopup="dialog" aria-controls="cart">
+    🛒 <span id="cart-count" role="status" aria-live="polite">0</span>
   </button>
   <div id="cart" class="cart">
     <div class="cart-header">
       <span><b>Кошик</b></span>
       <button id="close-cart" title="Закрити">&times;</button>
     </div>
-    <ul id="cart-items"></ul>
-    <p id="cart-total">Сума: 0 грн</p>
-    <button id="clear-cart" class="btn small">Очистити</button>
-    <button id="order-cart" class="btn order-btn">Замовити</button>
+    <div id="cart-content">
+      <ul id="cart-items"></ul>
+      <p id="cart-total">Сума: 0 грн</p>
+      <button id="clear-cart" class="btn small">Очистити</button>
+      <button id="order-cart" class="btn order-btn">Оформити замовлення</button>
+    </div>
+    <form id="order-form" class="order-form" style="display: none;">
+      <h3>Оформлення замовлення</h3>
+      <input type="text" name="name" placeholder="Ваше ім'я *" required>
+      <input type="tel" name="phone" placeholder="Телефон *" required>
+      <input type="email" name="email" placeholder="Email">
+      
+      <div class="delivery-section">
+        <h4>Доставка Новою Поштою</h4>
+        <div class="np-cities-wrapper">
+          <input type="text" id="npCitySearch" placeholder="Почніть вводити місто..." autocomplete="off">
+          <div id="npCitiesList" class="np-dropdown"></div>
+        </div>
+        <div class="np-warehouses-wrapper">
+          <select id="npWarehouse" name="warehouse" required disabled>
+            <option value="">Оберіть відділення</option>
+          </select>
+        </div>
+        <input type="hidden" name="cityRef" id="npCityRef">
+        <input type="hidden" name="cityName" id="npCityName">
+      </div>
+      
+      <textarea name="comment" placeholder="Коментар до замовлення"></textarea>
+      <div class="order-buttons">
+        <button type="button" class="btn small" id="back-to-cart">Назад</button>
+        <button type="submit" class="btn order-btn">Підтвердити замовлення</button>
+      </div>
+    </form>
   </div>
   <div id="cart-notify" class="cart-notify">Додано у кошик!</div>
 
@@ -83,23 +112,33 @@
           <p>89 грн</p>
           <button class="btn add-to-cart-btn">До кошика</button>
         </div>
+        <div class="product-card" data-id="4" data-name="Chicken Jerky Treats" data-price="129">
+          <img src="https://img.icons8.com/color/128/chicken.png" alt="Chicken Jerky">
+          <h4>Chicken Jerky Treats</h4>
+          <p>129 грн</p>
+          <button class="btn add-to-cart-btn">До кошика</button>
+        </div>
       </div>
     </section>
 
-    <section id="contact">
-      <h2>Зворотній зв'язок</h2>
-      <form>
-        <input type="text" placeholder="Ваше ім’я" required>
-        <input type="email" placeholder="Ваш email" required>
-        <textarea placeholder="Ваше питання"></textarea>
-        <button class="btn" type="submit">Надіслати</button>
-      </form>
+    <section id="contacts">
+      <h2>Наші контакти</h2>
+      <div class="contacts-block">
+        <div class="contacts-info"></div>
+        <div class="contacts-social">
+          <a href="tel:+380991234567" title="Зателефонувати">
+            <img src="https://img.icons8.com/color/48/phone.png" alt="Телефон">
+          </a>
+          <a href="https://t.me/pawswhiskers" target="_blank" title="Telegram"><img src="https://img.icons8.com/color/48/telegram-app.png" alt="Telegram"></a>
+          <a href="https://www.instagram.com/pawswhiskers" target="_blank" title="Instagram"><img src="https://img.icons8.com/color/48/instagram-new.png" alt="Instagram"></a>
+          <a href="https://www.facebook.com/pawswhiskers" target="_blank" title="Facebook"><img src="https://img.icons8.com/color/48/facebook-new.png" alt="Facebook"></a>
+        </div>
+      </div>
     </section>
   </main>
   <footer>
     <p>&copy; 2025 Paws & Whiskers. Всі права захищені.</p>
   </footer>
-  <ul id="cart-items"></ul>
   <script src="cart.js"></script>
 </body>
 </html>

@@ -152,7 +152,11 @@ document.addEventListener('touchstart', function(e) {
   }
 });
 
-// Замовлення (демо: показує alert)
+// Обробка форми замовлення
+const cartContent = document.getElementById('cart-content');
+const orderForm = document.getElementById('order-form');
+const backToCartBtn = document.getElementById('back-to-cart');
+
 orderBtn.addEventListener('mousedown', function(e){ e.stopPropagation(); }, true);
 orderBtn.addEventListener('touchstart', function(e){ e.stopPropagation(); }, true);
 orderBtn.addEventListener('click', function(e) {
@@ -160,12 +164,147 @@ orderBtn.addEventListener('click', function(e) {
     alert('Кошик порожній!');
     return;
   }
-  let itemsList = cart.map(item => `${item.name} x${item.qty} = ${item.price * item.qty} грн`).join('\n');
-  alert(`Ваше замовлення:\n${itemsList}\n\nЗагальна сума: ${cart.reduce((sum, i) => sum + i.price * i.qty, 0)} грн\n\nДякуємо за замовлення!`);
-  cart = [];
-  saveCart();
-  updateCartUI();
-  cartElement.classList.remove('open');
+  cartContent.style.display = 'none';
+  orderForm.style.display = 'block';
+});
+
+backToCartBtn.addEventListener('mousedown', function(e){ e.stopPropagation(); }, true);
+backToCartBtn.addEventListener('touchstart', function(e){ e.stopPropagation(); }, true);
+backToCartBtn.addEventListener('click', function() {
+  orderForm.style.display = 'none';
+  cartContent.style.display = 'block';
+});
+
+// Нова Пошта інтеграція
+const npCitySearch = document.getElementById('npCitySearch');
+const npCitiesList = document.getElementById('npCitiesList');
+const npWarehouse = document.getElementById('npWarehouse');
+const npCityRef = document.getElementById('npCityRef');
+const npCityName = document.getElementById('npCityName');
+
+let citySearchTimeout;
+
+npCitySearch.addEventListener('input', (e) => {
+  clearTimeout(citySearchTimeout);
+  const query = e.target.value.trim();
+  
+  if (query.length < 2) {
+    npCitiesList.innerHTML = '';
+    npCitiesList.classList.remove('active');
+    return;
+  }
+
+  citySearchTimeout = setTimeout(async () => {
+    try {
+      const response = await fetch(`/api/nova-poshta/cities?q=${encodeURIComponent(query)}`);
+      const cities = await response.json();
+      
+      if (cities.length > 0) {
+        npCitiesList.innerHTML = cities.map(city => `
+          <div data-ref="${city.Ref}" data-name="${city.Present}">${city.Present}</div>
+        `).join('');
+        npCitiesList.classList.add('active');
+      } else {
+        npCitiesList.innerHTML = '<div>Міста не знайдено</div>';
+        npCitiesList.classList.add('active');
+      }
+    } catch (error) {
+      console.error('Failed to fetch cities:', error);
+    }
+  }, 300);
+});
+
+npCitiesList.addEventListener('click', async (e) => {
+  const cityDiv = e.target.closest('div');
+  if (!cityDiv || !cityDiv.dataset.ref) return;
+
+  const cityRef = cityDiv.dataset.ref;
+  const cityName = cityDiv.dataset.name;
+
+  npCitySearch.value = cityName;
+  npCityRef.value = cityRef;
+  npCityName.value = cityName;
+  npCitiesList.classList.remove('active');
+
+  try {
+    const response = await fetch(`/api/nova-poshta/warehouses/${cityRef}`);
+    const warehouses = await response.json();
+
+    npWarehouse.innerHTML = `
+      <option value="">Оберіть відділення</option>
+      ${warehouses.map(w => `
+        <option value="${w.Description}">${w.Description}</option>
+      `).join('')}
+    `;
+    npWarehouse.disabled = false;
+  } catch (error) {
+    console.error('Failed to fetch warehouses:', error);
+  }
+});
+
+// Закриття випадаючого списку при кліку поза ним
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.np-cities-wrapper')) {
+    npCitiesList.classList.remove('active');
+  }
+});
+
+orderForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  if (!npCityRef.value || !npWarehouse.value) {
+    alert('Будь ласка, оберіть місто та відділення Нової Пошти');
+    return;
+  }
+
+  const formData = new FormData(orderForm);
+  const orderData = {
+    customerInfo: {
+      name: formData.get('name'),
+      phone: formData.get('phone'),
+      email: formData.get('email'),
+      delivery: {
+        city: npCityName.value,
+        cityRef: npCityRef.value,
+        warehouse: npWarehouse.value
+      },
+      comment: formData.get('comment')
+    },
+    items: cart.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.qty,
+      total: item.price * item.qty
+    })),
+    totalAmount: cart.reduce((sum, item) => sum + item.price * item.qty, 0)
+  };
+
+  try {
+    const response = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Помилка при відправці замовлення');
+    }
+    
+  const result = await response.json();
+  // Успішне замовлення з номером
+  alert(`Дякуємо за замовлення! Ваш номер замовлення: ${result.orderNumber}\nМи зв'яжемося з вами найближчим часом.`);
+    cart = [];
+    saveCart();
+    updateCartUI();
+    cartElement.classList.remove('open');
+    orderForm.reset();
+    orderForm.style.display = 'none';
+    cartContent.style.display = 'block';
+  } catch (error) {
+    alert('Виникла помилка при оформленні замовлення. Будь ласка, спробуйте ще раз.');
+  }
 });
 
 // ініціалізація
